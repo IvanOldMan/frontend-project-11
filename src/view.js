@@ -11,7 +11,6 @@ const state = {
 
 const render = (path, value, previousValue) => {
   if (path === 'rss.valid') {
-    console.log('dfsgsdgf');
     const input = document.getElementById('url-input');
     const form = document.querySelector('.rss-form');
     switch (value) {
@@ -27,7 +26,8 @@ const render = (path, value, previousValue) => {
     }
   }
   if (path === 'rss.errors') {
-
+    const feedback = document.querySelector('.feedback');
+    feedback.textContent = value;
   }
 }
 
