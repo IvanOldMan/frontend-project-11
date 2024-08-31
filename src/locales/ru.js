@@ -11,6 +11,8 @@ export default {
     errors: {
       double: 'RSS уже существует',
       validate: 'Ссылка должна быть валидным URL',
+      handle: 'Ошибка сети',
+      parse: 'Ресурс не содержит валидный RSS',
     }
   },
 }
