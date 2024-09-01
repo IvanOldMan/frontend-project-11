@@ -10,14 +10,12 @@ import updateRssData from './utils';
 
 const i18nextInstance = i18next.createInstance();
 
-window.addEventListener('DOMContentLoaded', () => {
-  i18nextInstance.init({
+i18nextInstance.init({
     lng: 'ru',
     debug: true,
     resources: { ru },
   })
-    .then((t) => init(t));
-});
+  .then((t) => init(t));
 
 const postsContainer = document.querySelector('.posts');
 postsContainer.addEventListener('click', (event) => {
