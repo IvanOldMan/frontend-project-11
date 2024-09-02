@@ -3,9 +3,9 @@ import _ from 'lodash';
 import watchedState from './render/view.js';
 import CustomError from './errorConstructor.js';
 
-const getRequest = async function (url) {
+async function getRequest(url) {
   return axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`);
-};
+}
 
 const parse = (content) => {
   const parser = new DOMParser();
@@ -52,13 +52,11 @@ const rssUpdate = ({ feed, posts }) => {
     watchedState.data.feeds.push(feed);
     currentFeedId = feed.id;
   } else {
-    currentFeedId = watchedState.data.feeds
-      .reduce((acc, cur) => {
-        if (cur.title === feed.title) {
-          acc = cur.id;
-        }
-        return acc;
-      }, -1);
+    watchedState.data.feeds.forEach((cur) => {
+      if (cur.title === feed.title) {
+        currentFeedId = cur.id;
+      }
+    });
   }
   const currentPosts = watchedState.data.posts
     .filter(({ feedId }) => currentFeedId === feedId)

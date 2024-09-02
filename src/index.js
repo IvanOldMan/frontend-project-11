@@ -30,6 +30,7 @@ postsContainer.addEventListener('click', (event) => {
     const { id } = href.dataset;
     watchedState.data.posts.forEach((post) => {
       if (post.id === id) {
+        // eslint-disable-next-line no-param-reassign
         post.status = 'visited';
       }
     });
@@ -39,6 +40,7 @@ postsContainer.addEventListener('click', (event) => {
     watchedState.currentPostId = id;
     watchedState.data.posts.forEach((post) => {
       if (post.id === id) {
+        // eslint-disable-next-line no-param-reassign
         post.status = 'visited';
       }
     });
