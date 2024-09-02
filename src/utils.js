@@ -3,7 +3,7 @@ import parse from './parser';
 import watchedState from './render/view';
 
 export default async function utils(url) {
-  return axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`)
+  return axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
     .then((response) => {
       const content = response.data.contents;
       const { feed, posts } = parse(content);

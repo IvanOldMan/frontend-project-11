@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/IvanOldMan/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/IvanOldMan/frontend-project-11/actions)",
   "main": "./src/init.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/IvanOldMan/frontend-project-11.git"
@@ -19,6 +17,7 @@
   "devDependencies": {
     "@babel/core": "^7.24.6",
     "@babel/preset-env": "^7.24.0",
+    "@types/node": "^22.5.2",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^9.1.3",
     "css-loader": "^7.1.2",
@@ -43,9 +42,9 @@
   "dependencies": {
     "axios": "^1.7.5",
     "bootstrap": "^5.3.3",
-    "on-change": "^5.0.1",
     "i18next": "^23.14.0",
     "lodash": "^4.17.21",
+    "on-change": "^5.0.1",
     "yup": "^1.4.0"
   }
 }
