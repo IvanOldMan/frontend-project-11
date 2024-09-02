@@ -5,8 +5,10 @@ import * as yup from 'yup';
 import watchedState from './render/view';
 import ru from './locales/ru';
 import init from './init';
-import CustomError from './app';
-import updateRssData from './utils';
+import CustomError from './errorConstructor';
+import { getRequest, parse, rssUpdate } from './utils';
+
+const timeout = 15_000;
 
 const i18nextInstance = i18next.createInstance();
 
@@ -65,7 +67,12 @@ form.addEventListener('submit', (event) => {
         throw new CustomError('DuplicateError');
       }
     })
-    .then((url) => updateRssData(url))
+    .then((url) => getRequest(url))
+    .then((response) => parse(response.data.contents))
+    .then((data) => {
+      watchedState.data.urls.push(url);
+      rssUpdate(data);
+    })
     .catch((error) => {
       watchedState.form.IsValid = false;
       console.log(error.message)
@@ -73,15 +80,23 @@ form.addEventListener('submit', (event) => {
     });
 
   const updatePosts = () => {
-    const promises = watchedState.data.urls.map((item) => updateRssData(item));
+    const urls = watchedState.data.urls;
+    const promises = urls.map((url) => getRequest(url));
     Promise.all(promises)
+      .then((response) => {
+        return response.map((element) => parse(element.data.contents))
+      })
+      .then((data) => {
+        data.forEach((item) => rssUpdate(item));
+        console.log('update')
+      })
       .then(() => {
         setTimeout(() => {
           updatePosts();
-        }, 5_000);
+        }, timeout);
       })
       .catch((error) => {
-        throw new Error(error);
+        throw new Error('Ошибка обновления');
       });
   };
   updatePosts();

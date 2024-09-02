@@ -12,28 +12,27 @@ const DomElements = {
 const render = (path, value) => {
   switch (path) {
     case 'form.IsValid':
-      if (value) {
-        DomElements.input.classList.remove('is-invalid');
-        DomElements.form.reset();
-      } else {
-        DomElements.input.classList.add('is-invalid');
-      }
+
       break;
     case 'data.urls':
       DomElements.feedback.textContent = i18nextInstance.t('feedback.rssAdded');
       DomElements.feedback.classList.replace('text-danger', 'text-success');
+      DomElements.input.classList.remove('is-invalid');
+      DomElements.form.reset();
       break;
 
     case 'form.error':
       if (value) {
         DomElements.feedback.textContent = i18nextInstance.t(`feedback.${value}`);
         DomElements.feedback.classList.replace('text-success', 'text-danger');
+        DomElements.input.classList.add('is-invalid');
       }
       break;
     case 'data.feeds':
       renderFeeds(watchedState.data.feeds);
       break;
     case 'data.posts':
+      console.log(watchedState.data.posts)
       renderPosts(watchedState.data.posts);
       break;
     case 'currentPostId':

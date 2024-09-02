@@ -1,6 +1,7 @@
 import i18nextInstance from '../index';
 
-const renderPosts = (posts) => {
+
+const createContainer = (type, list) => {
   const divCard = document.createElement('div');
   divCard.classList.add('card', 'border-0');
 
@@ -8,14 +9,21 @@ const renderPosts = (posts) => {
   divCardBody.classList.add('card-body');
 
   const h2 = document.createElement('h2');
-  h2.textContent = i18nextInstance.t('elements.posts.title');
+  h2.textContent = i18nextInstance.t(`elements.${type}.title`);
   h2.classList.add('card-title', 'h4');
   divCardBody.append(h2);
 
   const ul = document.createElement('ul');
   ul.classList.add('list-group', 'border-0', 'rounded-0');
 
-  posts.forEach((post) => {
+  list.forEach((element) => ul.append(element));
+
+  divCard.append(divCardBody, ul);
+  document.querySelector(`.${type}`).replaceChildren(divCard);
+}
+
+const renderPosts = (posts) => {
+  const list = posts.map((post) => {
     const {
       id,
       title,
@@ -46,30 +54,14 @@ const renderPosts = (posts) => {
     button.textContent = i18nextInstance.t('elements.posts.button');
 
     li.append(a, button);
-    ul.append(li);
+    return li;
   });
 
-  divCard.append(divCardBody, ul);
-
-  document.querySelector('.posts').replaceChildren(divCard);
+  createContainer('posts', list);
 };
 
 const renderFeeds = (feeds) => {
-  const divCard = document.createElement('div');
-  divCard.classList.add('card', 'border-0');
-
-  const divCardBody = document.createElement('div');
-  divCardBody.classList.add('card-body');
-
-  const h2 = document.createElement('h2');
-  h2.textContent = 'Фиды';
-  h2.classList.add('card-title', 'h4');
-  divCardBody.append(h2);
-
-  const ul = document.createElement('ul');
-  ul.classList.add('list-group', 'border-0', 'rounded-0');
-
-  feeds.forEach((feed) => {
+  const list = feeds.map((feed) => {
     const { title, description } = feed;
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'border-0', 'border-end-0');
@@ -82,12 +74,9 @@ const renderFeeds = (feeds) => {
     p.classList.add('m-0', 'small', 'text-black-50');
     p.textContent = description;
     li.append(h3, p);
-    ul.append(li);
+    return li;
   });
-
-  divCard.append(divCardBody, ul);
-
-  document.querySelector('.feeds').replaceChildren(divCard);
+  createContainer('feeds', list);
 };
 
 const renderModal = (post) => {
