@@ -67,7 +67,7 @@ form.addEventListener('submit', (event) => {
       }
       return link;
     })
-    .then((url) => getRequest(url))
+    .then((lnk) => getRequest(lnk))
     .then((response) => parse(response.data.contents))
     .then((data) => {
       watchedState.data.urls.push(url);
