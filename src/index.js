@@ -2,21 +2,21 @@ import './styles.scss';
 import 'bootstrap';
 import i18next from 'i18next';
 import * as yup from 'yup';
-import watchedState from './render/view';
-import ru from './locales/ru';
-import init from './init';
-import CustomError from './errorConstructor';
-import { getRequest, parse, rssUpdate } from './utils';
+import watchedState from './render/view.js';
+import ru from './locales/ru.js';
+import init from './init.js';
+import CustomError from './errorConstructor.js';
+import { getRequest, parse, rssUpdate } from './utils.js';
 
-const timeout = 15_000;
+const timeout = 5_000;
 
 const i18nextInstance = i18next.createInstance();
 
 i18nextInstance.init({
-    lng: 'ru',
-    debug: true,
-    resources: { ru },
-  })
+  lng: 'ru',
+  debug: true,
+  resources: { ru },
+})
   .then((t) => init(t));
 
 const postsContainer = document.querySelector('.posts');
@@ -54,18 +54,16 @@ form.addEventListener('submit', (event) => {
   const schema = yup.string().required().url();
 
   schema.validate(url)
-    .then((url) => {
-      if (!url.trim()) {
+    .then((link) => {
+      if (!link.trim()) {
         throw new CustomError('EmptyError');
       }
-      if (!watchedState.data.urls.includes(url)) {
-        watchedState.form.isValid = true;
+      if (!watchedState.data.urls.includes(link)) {
         watchedState.form.error = null;
-        return url;
       } else {
-        watchedState.form.IsValid = false;
         throw new CustomError('DuplicateError');
       }
+      return link;
     })
     .then((url) => getRequest(url))
     .then((response) => parse(response.data.contents))
@@ -74,28 +72,23 @@ form.addEventListener('submit', (event) => {
       rssUpdate(data);
     })
     .catch((error) => {
-      watchedState.form.IsValid = false;
-      console.log(error.message)
       watchedState.form.error = error.name;
     });
 
   const updatePosts = () => {
-    const urls = watchedState.data.urls;
-    const promises = urls.map((url) => getRequest(url));
+    const { urls } = watchedState.data;
+    const promises = urls.map((curUrl) => getRequest(curUrl));
     Promise.all(promises)
-      .then((response) => {
-        return response.map((element) => parse(element.data.contents))
-      })
+      .then((response) => response.map((element) => parse(element.data.contents)))
       .then((data) => {
         data.forEach((item) => rssUpdate(item));
-        console.log('update')
       })
       .then(() => {
         setTimeout(() => {
           updatePosts();
         }, timeout);
       })
-      .catch((error) => {
+      .catch(() => {
         throw new Error('Ошибка обновления');
       });
   };

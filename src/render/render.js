@@ -1,5 +1,4 @@
-import i18nextInstance from '../index';
-
+import i18nextInstance from '../index.js';
 
 const createContainer = (type, list) => {
   const divCard = document.createElement('div');
@@ -20,7 +19,7 @@ const createContainer = (type, list) => {
 
   divCard.append(divCardBody, ul);
   document.querySelector(`.${type}`).replaceChildren(divCard);
-}
+};
 
 const renderPosts = (posts) => {
   const list = posts.map((post) => {

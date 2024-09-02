@@ -1,7 +1,7 @@
 import onChange from 'on-change';
-import state from '../state';
-import i18nextInstance from '../index';
-import { renderPosts, renderFeeds, renderModal } from './render';
+import state from '../state.js';
+import i18nextInstance from '../index.js';
+import { renderPosts, renderFeeds, renderModal } from './render.js';
 
 const DomElements = {
   input: document.getElementById('url-input'),
@@ -9,11 +9,8 @@ const DomElements = {
   feedback: document.querySelector('.feedback'),
 };
 
-const render = (path, value) => {
+const watchedState = onChange(state, (path, value) => {
   switch (path) {
-    case 'form.IsValid':
-
-      break;
     case 'data.urls':
       DomElements.feedback.textContent = i18nextInstance.t('feedback.rssAdded');
       DomElements.feedback.classList.replace('text-danger', 'text-success');
@@ -28,13 +25,15 @@ const render = (path, value) => {
         DomElements.input.classList.add('is-invalid');
       }
       break;
+
     case 'data.feeds':
       renderFeeds(watchedState.data.feeds);
       break;
+
     case 'data.posts':
-      console.log(watchedState.data.posts)
       renderPosts(watchedState.data.posts);
       break;
+
     case 'currentPostId':
       watchedState.data.posts.forEach((post) => {
         if (post.id === value) {
@@ -42,8 +41,10 @@ const render = (path, value) => {
         }
       });
       break;
+
+    default:
+      throw new Error('Неизвестная ошибка, попробуйте еще раз');
   }
-};
-const watchedState = onChange(state, render);
+});
 
 export default watchedState;

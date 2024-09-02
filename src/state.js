@@ -1,6 +1,5 @@
 export default {
   form: {
-    isValid: false,
     error: null,
   },
   data: {

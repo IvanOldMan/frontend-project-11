@@ -1,11 +1,11 @@
 import axios from 'axios';
-import watchedState from './render/view';
-import CustomError from "./errorConstructor";
-import _ from "lodash";
+import _ from 'lodash';
+import watchedState from './render/view.js';
+import CustomError from './errorConstructor.js';
 
-const getRequest = async (url) => {
+const getRequest = async function (url) {
   return axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`);
-}
+};
 
 const parse = (content) => {
   const parser = new DOMParser();
@@ -22,27 +22,27 @@ const parse = (content) => {
   const feed = { id: feedId, title, description };
 
   const posts = Array.from(data.querySelectorAll('item'))
-  .reduce((acc, post) => {
-    const id = _.uniqueId();
-    const title = post.querySelector('title').textContent;
-    const description = post.querySelector('description').textContent;
-    const link = post.querySelector('link').textContent;
+    .reduce((acc, post) => {
+      const id = _.uniqueId();
+      const postTitle = post.querySelector('title').textContent;
+      const postDescription = post.querySelector('description').textContent;
+      const link = post.querySelector('link').textContent;
 
-    acc.push(
-      {
-        id,
-        title,
-        description,
-        link,
-        feedId,
-        status: 'unread',
-      },
-    );
-    return acc;
-  }, []);
+      acc.push(
+        {
+          id,
+          title: postTitle,
+          description: postDescription,
+          link,
+          feedId,
+          status: 'unread',
+        },
+      );
+      return acc;
+    }, []);
 
   return { feed, posts };
-}
+};
 
 const rssUpdate = ({ feed, posts }) => {
   const currentFeeds = watchedState.data.feeds.map((item) => item.title);
@@ -64,13 +64,11 @@ const rssUpdate = ({ feed, posts }) => {
     .filter(({ feedId }) => currentFeedId === feedId)
     .map((post) => post.title);
 
-  console.log(currentPosts);
-
   posts.forEach((post) => {
     if (!currentPosts.includes(post.title)) {
       watchedState.data.posts.push(post);
     }
   });
-}
+};
 
-export { getRequest, parse, rssUpdate}
+export { getRequest, parse, rssUpdate };
