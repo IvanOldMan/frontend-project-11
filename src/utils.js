@@ -10,15 +10,12 @@ async function getRequest(url) {
 const parse = (content) => {
   const parser = new DOMParser();
   const data = parser.parseFromString(content, 'text/xml');
-
   if (data.querySelector('parsererror')) {
     throw new CustomError('ParseError');
   }
-
   const title = data.querySelector('title').textContent;
   const description = data.querySelector('description').textContent;
   const feedId = _.uniqueId();
-
   const feed = { id: feedId, title, description };
 
   const posts = Array.from(data.querySelectorAll('item'))
@@ -27,7 +24,6 @@ const parse = (content) => {
       const postTitle = post.querySelector('title').textContent;
       const postDescription = post.querySelector('description').textContent;
       const link = post.querySelector('link').textContent;
-
       acc.push(
         {
           id,
@@ -40,7 +36,6 @@ const parse = (content) => {
       );
       return acc;
     }, []);
-
   return { feed, posts };
 };
 

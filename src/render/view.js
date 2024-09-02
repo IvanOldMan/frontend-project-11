@@ -17,7 +17,6 @@ const watchedState = onChange(state, (path, value) => {
       DomElements.input.classList.remove('is-invalid');
       DomElements.form.reset();
       break;
-
     case 'form.error':
       if (value) {
         DomElements.feedback.textContent = i18nextInstance.t(`feedback.${value}`);
@@ -25,15 +24,12 @@ const watchedState = onChange(state, (path, value) => {
         DomElements.input.classList.add('is-invalid');
       }
       break;
-
     case 'data.feeds':
       renderFeeds(watchedState.data.feeds);
       break;
-
     case 'data.posts':
       renderPosts(watchedState.data.posts);
       break;
-
     case 'currentPostId':
       watchedState.data.posts.forEach((post) => {
         if (post.id === value) {
@@ -41,7 +37,6 @@ const watchedState = onChange(state, (path, value) => {
         }
       });
       break;
-
     default:
       throw new Error('Неизвестная ошибка, попробуйте еще раз');
   }

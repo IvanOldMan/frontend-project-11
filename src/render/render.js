@@ -33,17 +33,12 @@ const renderPosts = (posts) => {
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-item-start', 'border-0', 'border-end-0');
 
     const a = document.createElement('a');
-    if (status === 'visited') {
-      a.classList.add('fw-normal', 'link-secondary');
-    } else {
-      a.classList.add('fw-bold');
-    }
+    status === 'visited' ? a.classList.add('fw-normal', 'link-secondary') : a.classList.add('fw-bold');
     a.setAttribute('href', link);
     a.dataset.id = id;
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
     a.textContent = title;
-
     const button = document.createElement('button');
     button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
     button.setAttribute('type', 'button');
@@ -55,7 +50,6 @@ const renderPosts = (posts) => {
     li.append(a, button);
     return li;
   });
-
   createContainer('posts', list);
 };
 
