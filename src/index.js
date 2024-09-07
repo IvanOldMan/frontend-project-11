@@ -1,9 +1,14 @@
 import './styles.scss';
 import 'bootstrap';
 import i18next from 'i18next';
-import ru from './locales/ru';
-import { watchedState, validateUrl, getRequest, rssUpdate } from './app';
-import parse from './utils/parser';
+import ru from './locales/ru.js';
+import {
+  watchedState,
+  validateUrl,
+  getRequest,
+  rssUpdate
+} from './app.js';
+import parse from './utils/parser.js';
 
 const domElements = {
   title: document.querySelector('.display-3'),
@@ -60,7 +65,7 @@ domElements.form.addEventListener('submit', (event) => {
       watchedState.data.urls.push(url);
 
       const { newFeeds, newPosts } = rssUpdate(feed, posts);
-      newFeeds.forEach((feed) => watchedState.data.feeds.push(feed));
+      newFeeds.forEach((item) => watchedState.data.feeds.push(item));
       newPosts.forEach((post) => watchedState.data.posts.push(post));
     })
     .catch((error) => {
@@ -75,7 +80,7 @@ domElements.form.addEventListener('submit', (event) => {
       .then((data) => {
         data.forEach(({ feed, posts }) => {
           const { newFeeds, newPosts } = rssUpdate(feed, posts);
-          newFeeds.forEach((feed) => watchedState.data.feeds.push(feed));
+          newFeeds.forEach((item) => watchedState.data.feeds.push(item));
           newPosts.forEach((post) => watchedState.data.posts.push(post));
         });
       })

@@ -88,4 +88,9 @@ const rssUpdate = (feed, posts) => {
   return { newFeeds, newPosts };
 };
 
-export { watchedState, validateUrl, getRequest, rssUpdate };
+export {
+  watchedState,
+  validateUrl,
+  getRequest,
+  rssUpdate
+};

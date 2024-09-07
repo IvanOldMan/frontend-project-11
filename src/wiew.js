@@ -6,8 +6,8 @@ const DomElements = {
   feedback: document.querySelector('.feedback'),
 };
 
-const error = (error) => {
-  if (error) {
+const error = (err) => {
+  if (err) {
     DomElements.feedback.textContent = i18nextInstance.t(`feedback.${error}`);
     DomElements.feedback.classList.replace('text-success', 'text-danger');
     DomElements.input.classList.add('is-invalid');
@@ -42,8 +42,8 @@ const createContainer = (type, list) => {
   document.querySelector(`.${type}`).replaceChildren(divCard);
 };
 
-const posts = (posts) => {
-  const list = posts.map((post) => {
+const posts = (postsList) => {
+  const list = postsList.map((post) => {
     const {
       id,
       title,
@@ -78,8 +78,8 @@ const posts = (posts) => {
   createContainer('posts', list);
 };
 
-const feeds = (feeds) => {
-  const list = feeds.map((feed) => {
+const feeds = (feedsList) => {
+  const list = feedsList.map((feed) => {
     const { title, description } = feed;
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'border-0', 'border-end-0');
@@ -107,4 +107,10 @@ const modal = (post) => {
   link.setAttribute('href', post.link);
 };
 
-export { posts, feeds, modal, error, success };
+export {
+  posts,
+  feeds,
+  modal,
+  error,
+  success
+};

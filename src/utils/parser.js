@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import CustomError from './errorConstructor';
+import CustomError from './errorConstructor.js';
 
 export default function parse(content) {
   const parser = new DOMParser();
