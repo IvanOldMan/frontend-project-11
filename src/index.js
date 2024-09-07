@@ -1,77 +1,67 @@
 import './styles.scss';
 import 'bootstrap';
 import i18next from 'i18next';
-import * as yup from 'yup';
-import watchedState from './render/view.js';
-import ru from './locales/ru.js';
-import init from './init.js';
-import CustomError from './errorConstructor.js';
-import { getRequest, parse, rssUpdate } from './utils.js';
+import ru from './locales/ru';
+import { watchedState, validateUrl, getRequest, rssUpdate } from './app';
+import parse from './utils/parser';
 
-const timeout = 5_000;
+const domElements = {
+  title: document.querySelector('.display-3'),
+  lead: document.querySelector('.lead'),
+  input: document.getElementById('url-input'),
+  form: document.forms[0],
+  label: document.querySelector('label'),
+  button: document.querySelector('form').querySelector('.btn'),
+  example: document.querySelector('.example'),
+  modal: {
+    readButton: document.querySelector('.modal-footer').querySelector('a'),
+    closeButton: document.querySelector('.modal-footer').querySelector('button'),
+  },
+  posts: document.querySelector('.posts'),
+};
 
 const i18nextInstance = i18next.createInstance();
-
 i18nextInstance.init({
   lng: 'ru',
   debug: true,
   resources: { ru },
 })
-  .then((t) => init(t));
+  .then((t) => {
+    domElements.title.textContent = t('elements.title');
+    domElements.lead.textContent = t('elements.lead');
+    domElements.input.setAttribute('placeholder', t('elements.placeholder'));
+    domElements.label.textContent = t('elements.label');
+    domElements.button.textContent = t('elements.button');
+    domElements.example.textContent = t('elements.example');
+    domElements.modal.readButton.textContent = t('elements.modal.readButton');
+    domElements.modal.closeButton.textContent = t('elements.modal.closeButton');
+  });
 
-const postsContainer = document.querySelector('.posts');
-postsContainer.addEventListener('click', (event) => {
+domElements.posts.addEventListener('click', (event) => {
   const targetElement = event.target;
-
   const href = targetElement.closest('a');
   const button = targetElement.closest('button');
 
-  if (href) {
-    const { id } = href.dataset;
-    watchedState.data.posts.forEach((post) => {
-      if (post.id === id) {
-        // eslint-disable-next-line no-param-reassign
-        post.status = 'visited';
-      }
-    });
-  }
-  if (button) {
-    const { id } = button.dataset;
-    watchedState.currentPostId = id;
-    watchedState.data.posts.forEach((post) => {
-      if (post.id === id) {
-        // eslint-disable-next-line no-param-reassign
-        post.status = 'visited';
-      }
-    });
-  }
+  const id = href ? href.dataset.id : button.dataset.id;
+  watchedState.currentPostId = id;
 });
 
-const form = document.forms[0];
-form.addEventListener('submit', (event) => {
+domElements.form.addEventListener('submit', (event) => {
   event.preventDefault();
-  const formData = new FormData(form);
+  const formData = new FormData(domElements.form);
   const url = formData.get('url').trim();
 
-  const schema = yup.string().required().url();
-
-  schema.validate(url)
-    .then((link) => {
-      if (!link.trim()) {
-        throw new CustomError('EmptyError');
-      }
-      if (!watchedState.data.urls.includes(link)) {
-        watchedState.form.error = null;
-      } else {
-        throw new CustomError('DuplicateError');
-      }
-      return link;
-    })
-    .then((lnk) => getRequest(lnk))
-    .then((response) => parse(response.data.contents))
-    .then((data) => {
+  validateUrl(url)
+    .then((validUrl) => getRequest(validUrl))
+    .then((response) => response.data.contents)
+    .then((data) => parse(data))
+    .then(({ feed, posts }) => {
+      watchedState.form.error = null;
       watchedState.data.urls.push(url);
-      rssUpdate(data);
+
+      const { newFeeds, newPosts } = rssUpdate(feed, posts);
+      newFeeds.forEach((feed) => watchedState.data.feeds.push(feed));
+      newPosts.forEach((post) => watchedState.data.posts.push(post));
     })
     .catch((error) => {
       watchedState.form.error = error.name;
@@ -83,12 +73,16 @@ form.addEventListener('submit', (event) => {
     Promise.all(promises)
       .then((response) => response.map((element) => parse(element.data.contents)))
       .then((data) => {
-        data.forEach((item) => rssUpdate(item));
+        data.forEach(({ feed, posts }) => {
+          const { newFeeds, newPosts } = rssUpdate(feed, posts);
+          newFeeds.forEach((feed) => watchedState.data.feeds.push(feed));
+          newPosts.forEach((post) => watchedState.data.posts.push(post));
+        });
       })
       .then(() => {
         setTimeout(() => {
           updatePosts();
-        }, timeout);
+        }, 5_000);
       })
       .catch(() => {
         throw new Error('Ошибка обновления');

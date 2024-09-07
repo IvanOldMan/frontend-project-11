@@ -1,4 +1,25 @@
-import i18nextInstance from '../index.js';
+import i18nextInstance from './index.js';
+
+const DomElements = {
+  input: document.getElementById('url-input'),
+  form: document.querySelector('.rss-form'),
+  feedback: document.querySelector('.feedback'),
+};
+
+const error = (error) => {
+  if (error) {
+    DomElements.feedback.textContent = i18nextInstance.t(`feedback.${error}`);
+    DomElements.feedback.classList.replace('text-success', 'text-danger');
+    DomElements.input.classList.add('is-invalid');
+  }
+};
+
+const success = () => {
+  DomElements.feedback.textContent = i18nextInstance.t('feedback.rssAdded');
+  DomElements.feedback.classList.replace('text-danger', 'text-success');
+  DomElements.input.classList.remove('is-invalid');
+  DomElements.form.reset();
+};
 
 const createContainer = (type, list) => {
   const divCard = document.createElement('div');
@@ -21,7 +42,7 @@ const createContainer = (type, list) => {
   document.querySelector(`.${type}`).replaceChildren(divCard);
 };
 
-const renderPosts = (posts) => {
+const posts = (posts) => {
   const list = posts.map((post) => {
     const {
       id,
@@ -57,7 +78,7 @@ const renderPosts = (posts) => {
   createContainer('posts', list);
 };
 
-const renderFeeds = (feeds) => {
+const feeds = (feeds) => {
   const list = feeds.map((feed) => {
     const { title, description } = feed;
     const li = document.createElement('li');
@@ -76,7 +97,7 @@ const renderFeeds = (feeds) => {
   createContainer('feeds', list);
 };
 
-const renderModal = (post) => {
+const modal = (post) => {
   const title = document.querySelector('.modal-title');
   const body = document.querySelector('.modal-body');
   const link = document.querySelector('.modal-footer').querySelector('a');
@@ -86,4 +107,4 @@ const renderModal = (post) => {
   link.setAttribute('href', post.link);
 };
 
-export { renderPosts, renderFeeds, renderModal };
+export { posts, feeds, modal, error, success };
