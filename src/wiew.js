@@ -8,7 +8,7 @@ const DomElements = {
 
 const error = (err) => {
   if (err) {
-    DomElements.feedback.textContent = i18nextInstance.t(`feedback.${error}`);
+    DomElements.feedback.textContent = i18nextInstance.t(`feedback.${err}`);
     DomElements.feedback.classList.replace('text-success', 'text-danger');
     DomElements.input.classList.add('is-invalid');
   }
