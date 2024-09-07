@@ -112,5 +112,5 @@ export {
   feeds,
   modal,
   error,
-  success
+  success,
 };

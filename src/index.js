@@ -6,7 +6,7 @@ import {
   watchedState,
   validateUrl,
   getRequest,
-  rssUpdate
+  rssUpdate,
 } from './app.js';
 import parse from './utils/parser.js';
 

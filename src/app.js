@@ -92,5 +92,5 @@ export {
   watchedState,
   validateUrl,
   getRequest,
-  rssUpdate
+  rssUpdate,
 };
